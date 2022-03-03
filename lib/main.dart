@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:football_news/home.dart';
+import 'package:football_news/ui/home.dart';
 
 void main() {
   runApp(const FootballNewsApp());
@@ -12,6 +12,7 @@ class FootballNewsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Football News',
       theme: ThemeData(
         primarySwatch: Colors.blue,
