@@ -9,12 +9,9 @@ const Map<String, String> _headers = {
 };
 
 class NewsService {
-
   // Base API request to get response
-  Future<dynamic> getData({
-    required String endpoint,
-    required Map<String, String> query
-  }) async {
+  Future<dynamic> getData(
+      {required String endpoint, required Map<String, String>? query}) async {
     Uri uri = Uri.https(_baseUrl, endpoint, query);
 
     final response = await http.get(uri, headers: _headers);
@@ -28,13 +25,27 @@ class NewsService {
 
   Future<dynamic> getAllFixtures() async {
     const String endpoint = '/fixtures';
-    const query = {"date": '2022-03-03'};
+    const query = {"date": '2022-03-06'};
 
-    final recipeData = await getData(
-      endpoint: endpoint,
-      query: query
-    );
+    final loadedData = await getData(endpoint: endpoint, query: query);
+    return loadedData;
+  }
 
-    return recipeData;
+  Future<dynamic> getAllLeagues() async {
+    const String endpoint = '/leagues';
+
+    final loadedData = await getData(endpoint: endpoint, query: null);
+    return loadedData;
+  }
+
+  Future<dynamic> getAllStandings({
+    required int leagueId,
+    required int year
+  }) async {
+    const String endpoint = '/standings';
+    var query = {'league': '$leagueId', 'season': '$year'};
+
+    final loadedData = await getData(endpoint: endpoint, query: query);
+    return loadedData;
   }
 }
