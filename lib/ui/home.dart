@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:football_news/ui/all_games_screen.dart';
 import 'package:football_news/ui/favorites_screen.dart';
 import 'package:football_news/ui/live_screen.dart';
-import 'package:football_news/ui/standings_screen.dart';
+import 'package:football_news/ui/available_countries_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
     AllGamesScreen(),
     LiveScreen(),
     FavouritesScreen(),
-    StandingsScreen()
+    AvailableCountriesScreen()
   ];
 
   int _currentIndex = 0;
