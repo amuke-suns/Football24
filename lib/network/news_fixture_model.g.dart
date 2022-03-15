@@ -49,6 +49,7 @@ APIFixture _$APIFixtureFromJson(Map<String, dynamic> json) {
     timezone: json['timezone'] as String,
     date: json['date'] as String,
     timestamp: (json['timestamp'] as num).toDouble(),
+    status: APIFixtureStatus.fromJson(json['status'] as Map<String, dynamic>),
   );
 }
 
@@ -59,6 +60,20 @@ Map<String, dynamic> _$APIFixtureToJson(APIFixture instance) =>
       'timezone': instance.timezone,
       'date': instance.date,
       'timestamp': instance.timestamp,
+      'status': instance.status,
+    };
+
+APIFixtureStatus _$APIFixtureStatusFromJson(Map<String, dynamic> json) {
+  return APIFixtureStatus(
+    short: json['short'] as String,
+    elapsed: json['elapsed'] as int?,
+  );
+}
+
+Map<String, dynamic> _$APIFixtureStatusToJson(APIFixtureStatus instance) =>
+    <String, dynamic>{
+      'short': instance.short,
+      'elapsed': instance.elapsed,
     };
 
 APILeague _$APILeagueFromJson(Map<String, dynamic> json) {

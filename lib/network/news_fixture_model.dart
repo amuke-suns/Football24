@@ -18,7 +18,6 @@ class APIFixturesQuery {
       _$APIFixturesQueryFromJson(json);
 
   Map<String, dynamic> toJson() => _$APIFixturesQueryToJson(this);
-
 }
 
 @JsonSerializable()
@@ -49,6 +48,7 @@ class APIFixture {
   String? referee;
   String timezone, date;
   double timestamp;
+  APIFixtureStatus status;
 
   APIFixture({
     required this.id,
@@ -56,12 +56,32 @@ class APIFixture {
     required this.timezone,
     required this.date,
     required this.timestamp,
+    required this.status,
   });
 
   factory APIFixture.fromJson(Map<String, dynamic> json) =>
       _$APIFixtureFromJson(json);
 
   Map<String, dynamic> toJson() => _$APIFixtureToJson(this);
+}
+
+@JsonSerializable()
+class APIFixtureStatus {
+
+  String short;
+  int? elapsed;
+
+  APIFixtureStatus({
+    required this.short,
+    required this.elapsed,
+  });
+
+  bool hasNotStarted() => short == "NS" ? true : false;
+
+  factory APIFixtureStatus.fromJson(Map<String, dynamic> json) =>
+      _$APIFixtureStatusFromJson(json);
+
+  Map<String, dynamic> toJson() => _$APIFixtureStatusToJson(this);
 }
 
 @JsonSerializable()
