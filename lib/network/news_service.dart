@@ -23,15 +23,15 @@ class NewsService {
     }
   }
 
-  Future<dynamic> getAllFixtures() async {
-    const String endpoint = '/fixtures';
-    const query = {"date": '2022-03-06'};
+  Future<dynamic> getAllFixtures({required String date}) async {
+    String endpoint = '/fixtures';
+    final query = {"date": date};
 
     final loadedData = await getData(endpoint: endpoint, query: query);
     return loadedData;
   }
 
-  Future<dynamic> getAllLeagues() async {
+  Future<dynamic> getAllCompetitions() async {
     const String endpoint = '/leagues';
 
     final loadedData = await getData(endpoint: endpoint, query: null);
@@ -40,7 +40,7 @@ class NewsService {
 
   Future<dynamic> getAllStandings({
     required int leagueId,
-    required int year
+    required int year,
   }) async {
     const String endpoint = '/standings';
     var query = {'league': '$leagueId', 'season': '$year'};
