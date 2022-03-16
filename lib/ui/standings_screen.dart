@@ -96,6 +96,7 @@ class _StandingsScreenState extends State<StandingsScreen> {
     return _standings == null
         ? const Center(child: CircularProgressIndicator())
         : DataTable(
+            showCheckboxColumn: false,
             columnSpacing: 0,
             columns: const [
               DataColumn(label: Text('#')),
@@ -107,9 +108,23 @@ class _StandingsScreenState extends State<StandingsScreen> {
             rows: [
               for (int i = 0; i < _standings!.length; i++)
                 DataRow(
+                  onSelectChanged: (itemRow) {
+                    print(_standings![i].description);
+                  },
                   cells: [
                     DataCell(Text(_standings![i].rank.toString())),
-                    DataCell(Text(_standings![i].team.name)),
+                    DataCell(
+                      Row(
+                        children: [
+                          Image.network(
+                            _standings![i].team.logo,
+                            width: 25,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(_standings![i].team.name)
+                        ],
+                      ),
+                    ),
                     DataCell(Text(_standings![i].all.played.toString())),
                     DataCell(Text('${_standings![i].all.goals.goalsFor}'
                         ':${_standings![i].all.goals.goalsAgainst}')),
