@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:football_news/constants/constants.dart';
+import 'package:football_news/models/models.dart';
 import 'package:football_news/network/news_fixture_model.dart';
 import 'package:football_news/network/news_service.dart';
 
@@ -10,6 +11,7 @@ import "package:collection/collection.dart";
 import 'package:football_news/ui/fixtures_screen.dart';
 import 'package:football_news/widgets/widgets.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:provider/provider.dart';
 
 class AllGamesScreen extends StatefulWidget {
   const AllGamesScreen({Key? key}) : super(key: key);
@@ -25,6 +27,9 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
   }
 
   Widget _buildCompetitionLoader(context) {
+    bool darkMode =
+        Provider.of<SettingsManager>(context, listen: true).darkMode;
+
     return FutureBuilder<Map<String, List<APIFixtureDetails>>>(
       future: getFixturesData(),
       builder: (context, snapshot) {
@@ -37,15 +42,12 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
             groupBy: (key) =>
                 key == kFavouriteKey ? kFavouriteKey : kOtherCompetitionsKey,
             groupSeparatorBuilder: (String groupByValue) {
-              return Container(
-                padding: const EdgeInsets.all(4),
-                width: double.infinity,
-                color: Colors.grey[400],
-                child: Text(
-                  groupByValue.trim(),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              );
+              return groupByValue == kFavouriteKey
+                  ? FavouriteGroupTextContainer(isDarkMode: darkMode)
+                  : OthersGroupTextContainer(
+                      isDarkMode: darkMode,
+                      text: groupByValue,
+                    );
             },
             useStickyGroupSeparators: true,
             itemBuilder: (context, key) {
@@ -87,7 +89,6 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
 
   ListTile _buildGameTile(
       List<APIFixtureDetails> fixtures, String key, BuildContext context) {
-
     return ListTile(
       title: CompetitionCard(
         imageUrl: fixtures.first.league.flag,
@@ -96,7 +97,10 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
       ),
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return FixturesScreen(title: key, fixtures: fixtures);
+          return FixturesScreen(
+            title: fixtures.first.league.name,
+            fixtures: fixtures,
+          );
         }));
       },
     );
@@ -105,8 +109,8 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
   Future<Map<String, List<APIFixtureDetails>>> getFixturesData() async {
     // var date = DateTime.now();
     // load the sample json string
-    // final jsonString = await rootBundle.loadString('assets/fixture2.json');
-    final jsonString = await NewsService().getAllFixtures(date: '2022-03-16');
+    final jsonString = await rootBundle.loadString('assets/fixture2.json');
+    // final jsonString = await NewsService().getAllFixtures(date: '2022-03-17');
 
     APIFixturesQuery decodedData =
         APIFixturesQuery.fromJson(jsonDecode(jsonString));

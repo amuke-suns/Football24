@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:football_news/constants/constants.dart';
+import 'package:football_news/models/models.dart';
 import 'package:football_news/network/news_league_model.dart';
 import 'package:football_news/network/news_service.dart';
 
@@ -11,6 +12,7 @@ import 'package:football_news/ui/leagues_screen.dart';
 import 'package:football_news/ui/standings_screen.dart';
 import 'package:football_news/widgets/widgets.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:provider/provider.dart';
 
 class CompetitionsScreen extends StatefulWidget {
   const CompetitionsScreen({Key? key}) : super(key: key);
@@ -26,10 +28,20 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
   }
 
   Widget _buildStandingsLoader(context) {
+    bool darkMode =
+        Provider.of<SettingsManager>(context, listen: true).darkMode;
+
     return FutureBuilder<Map<String, List<APILeagueDesc>>>(
       future: getCompetitionsData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            // print(snapshot.error);
+            return const Center(
+              child: Text('Error occurred'),
+            );
+          }
+
           var data = snapshot.data!;
           var keys = data.keys.toList();
 
@@ -37,15 +49,12 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
             elements: keys,
             groupBy: (key) => key == kFavouriteKey ? key : key[0],
             groupSeparatorBuilder: (String groupByValue) {
-              return Container(
-                padding: const EdgeInsets.all(4),
-                width: double.infinity,
-                color: Colors.grey[400],
-                child: Text(
-                  groupByValue.trim(),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              );
+              return groupByValue == kFavouriteKey
+                  ? FavouriteGroupTextContainer(isDarkMode: darkMode)
+                  : OthersGroupTextContainer(
+                      isDarkMode: darkMode,
+                      text: groupByValue,
+                    );
             },
             useStickyGroupSeparators: true,
             itemBuilder: (context, key) {
@@ -67,7 +76,6 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
 
   Widget _buildFavouriteList(
       BuildContext context, List<APILeagueDesc> leaguesDesc) {
-
     leaguesDesc.sort((a, b) => a.country.name.compareTo(b.country.name));
 
     return Column(
@@ -124,7 +132,6 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
 
     APILeagueQuery decodedData =
         APILeagueQuery.fromJson(jsonDecode(jsonString));
-
 
     // group by country name
     Map<String, List<APILeagueDesc>> groupedMap =
