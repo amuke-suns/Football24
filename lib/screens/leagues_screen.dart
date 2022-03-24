@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:football_news/network/news_fixture_model.dart';
 import 'package:football_news/network/news_league_model.dart';
 import 'package:football_news/network/news_service.dart';
-import 'package:football_news/ui/standings_screen.dart';
+import 'package:football_news/screens/screens.dart';
 
 class LeaguesScreen extends StatelessWidget {
   final String title;
@@ -21,13 +20,13 @@ class LeaguesScreen extends StatelessWidget {
       body: ListView.builder(
         itemCount: leagues.length,
         itemBuilder: (BuildContext context, int index) {
-          APILeagueDesc league = leagues[index];
+          var league = leagues[index].league;
 
           return ListTile(
-            title: Text(league.league.name),
+            title: Text(league.name),
             onTap: () async {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return StandingsScreen(leagueDesc: league);
+                return StandingsScreen(leagueId: league.id);
               }));
             },
           );

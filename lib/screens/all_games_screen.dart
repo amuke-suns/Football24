@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:football_news/constants/constants.dart';
+import 'package:football_news/data/memory_repository.dart';
 import 'package:football_news/models/models.dart';
 import 'package:football_news/network/news_fixture_model.dart';
 import 'package:football_news/network/news_service.dart';
 
 import "package:collection/collection.dart";
-import 'package:football_news/ui/fixtures_screen.dart';
+import 'package:football_news/screens/screens.dart';
 import 'package:football_news/widgets/widgets.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
@@ -31,9 +32,17 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
         Provider.of<SettingsManager>(context, listen: true).darkMode;
 
     return FutureBuilder<Map<String, List<APIFixtureDetails>>>(
-      future: getFixturesData(),
+      future: getFixturesData(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            print(snapshot.error);
+
+            return const Center(
+              child: Text('Error occurred'),
+            );
+          }
+
           var data = snapshot.data!;
           var keys = data.keys.toList();
 
@@ -43,8 +52,8 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
                 key == kFavouriteKey ? kFavouriteKey : kOtherCompetitionsKey,
             groupSeparatorBuilder: (String groupByValue) {
               return groupByValue == kFavouriteKey
-                  ? FavouriteGroupTextContainer(isDarkMode: darkMode)
-                  : OthersGroupTextContainer(
+                  ? FavouriteGroupHeader(isDarkMode: darkMode)
+                  : OthersGroupHeader(
                       isDarkMode: darkMode,
                       text: groupByValue,
                     );
@@ -106,11 +115,17 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
     );
   }
 
-  Future<Map<String, List<APIFixtureDetails>>> getFixturesData() async {
-    // var date = DateTime.now();
+  Future<Map<String, List<APIFixtureDetails>>> getFixturesData(
+      BuildContext context) async {
+    String selectedDate = Provider.of<AppDateManager>(context, listen: true)
+        .getSelectedDateApiFormat();
+
+    List<String> favIdList =
+        Provider.of<MemoryRepository>(context, listen: true).favouriteIds;
+
     // load the sample json string
     final jsonString = await rootBundle.loadString('assets/fixture2.json');
-    // final jsonString = await NewsService().getAllFixtures(date: '2022-03-17');
+    // final jsonString = await NewsService().getAllFixtures(date: selectedDate);
 
     APIFixturesQuery decodedData =
         APIFixturesQuery.fromJson(jsonDecode(jsonString));
@@ -118,7 +133,7 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
     // group by country and league name
     var groupedMap = decodedData.response.groupListsBy(
       (element) {
-        if (kFavIdList.contains(element.league.id)) {
+        if (favIdList.contains(element.league.id.toString())) {
           return kFavouriteKey;
         }
         return '${element.league.country}: ${element.league.name}';

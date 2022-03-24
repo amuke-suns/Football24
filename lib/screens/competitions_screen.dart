@@ -8,11 +8,12 @@ import 'package:football_news/network/news_league_model.dart';
 import 'package:football_news/network/news_service.dart';
 
 import "package:collection/collection.dart";
-import 'package:football_news/ui/leagues_screen.dart';
-import 'package:football_news/ui/standings_screen.dart';
+import 'package:football_news/screens/screens.dart';
 import 'package:football_news/widgets/widgets.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
+
+import '../data/memory_repository.dart';
 
 class CompetitionsScreen extends StatefulWidget {
   const CompetitionsScreen({Key? key}) : super(key: key);
@@ -32,11 +33,10 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
         Provider.of<SettingsManager>(context, listen: true).darkMode;
 
     return FutureBuilder<Map<String, List<APILeagueDesc>>>(
-      future: getCompetitionsData(),
+      future: getCompetitionsData(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-            // print(snapshot.error);
             return const Center(
               child: Text('Error occurred'),
             );
@@ -50,8 +50,8 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
             groupBy: (key) => key == kFavouriteKey ? key : key[0],
             groupSeparatorBuilder: (String groupByValue) {
               return groupByValue == kFavouriteKey
-                  ? FavouriteGroupTextContainer(isDarkMode: darkMode)
-                  : OthersGroupTextContainer(
+                  ? FavouriteGroupHeader(isDarkMode: darkMode)
+                  : OthersGroupHeader(
                       isDarkMode: darkMode,
                       text: groupByValue,
                     );
@@ -76,6 +76,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
 
   Widget _buildFavouriteList(
       BuildContext context, List<APILeagueDesc> leaguesDesc) {
+    // sort the items
     leaguesDesc.sort((a, b) => a.country.name.compareTo(b.country.name));
 
     return Column(
@@ -90,7 +91,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
             ),
             onTap: () async {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return StandingsScreen(leagueDesc: desc);
+                return StandingsScreen(leagueId: desc.league.id);
               }));
             },
           )
@@ -99,7 +100,10 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
   }
 
   Widget _buildCompetitionCard(
-      List<APILeagueDesc> leagues, String key, BuildContext context) {
+    List<APILeagueDesc> leagues,
+    String key,
+    BuildContext context,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -125,7 +129,12 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
     );
   }
 
-  Future<Map<String, List<APILeagueDesc>>> getCompetitionsData() async {
+  Future<Map<String, List<APILeagueDesc>>> getCompetitionsData(
+    BuildContext context,
+  ) async {
+    List<String> favIdList =
+        Provider.of<MemoryRepository>(context, listen: true).favouriteIds;
+
     // load the sample json string
     final jsonString = await rootBundle.loadString('assets/league1.json');
     // final jsonString = await NewsService().getAllCompetitions();
@@ -136,7 +145,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
     // group by country name
     Map<String, List<APILeagueDesc>> groupedMap =
         decodedData.response.groupListsBy((element) {
-      if (kFavIdList.contains(element.league.id)) {
+      if (favIdList.contains(element.league.id.toString())) {
         return kFavouriteKey;
       }
       return element.country.name;
