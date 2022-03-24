@@ -35,7 +35,7 @@ class APILeagueDetails {
 @JsonSerializable()
 class APILeague {
   int id;
-  String name, country, logo;
+  String name, country, logo, flag;
   int season;
   List<List<APITeamStanding>> standings;
 
@@ -46,6 +46,7 @@ class APILeague {
     required this.logo,
     required this.season,
     required this.standings,
+    required this.flag,
   });
 
   factory APILeague.fromJson(Map<String, dynamic> json) =>
