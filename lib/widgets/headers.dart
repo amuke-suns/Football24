@@ -3,10 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants/constants.dart';
 
-class FavouriteGroupTextContainer extends StatelessWidget {
+class FavouriteGroupHeader extends StatelessWidget {
   final bool isDarkMode;
 
-  const FavouriteGroupTextContainer({
+  const FavouriteGroupHeader({
     Key? key,
     required this.isDarkMode,
   }) : super(key: key);
@@ -28,14 +28,14 @@ class FavouriteGroupTextContainer extends StatelessWidget {
   }
 }
 
-class FavouriteHeaderTextClicker extends StatelessWidget {
+class FavouriteFixturesHeader extends StatelessWidget {
   final bool isDarkMode;
   final String country;
   final String league;
   final String? imageUrl;
   final Function() onTap;
 
-  const FavouriteHeaderTextClicker({
+  const FavouriteFixturesHeader({
     Key? key,
     required this.isDarkMode,
     required this.country,
@@ -62,9 +62,8 @@ class FavouriteHeaderTextClicker extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   style: TextStyle(
-                    fontSize: 14,
-                    color: isDarkMode ? Colors.yellow : Colors.black54
-                  ),
+                      fontSize: 14,
+                      color: isDarkMode ? Colors.yellow : Colors.black54),
                   children: [
                     TextSpan(text: country.toUpperCase() + ': '),
                     TextSpan(
@@ -83,44 +82,18 @@ class FavouriteHeaderTextClicker extends StatelessWidget {
         ),
       ),
     );
-
-    /*return ListTile(
-      dense: true,
-      textColor: isDarkMode ? Colors.yellow : Colors.black54,
-      tileColor: isDarkMode ? Colors.grey[700] : Colors.yellow[200],
-      minLeadingWidth: 5,
-      leading: SvgPicture.network(
-        imageUrl ?? '',
-        height: 14,
-      ),
-      title: Text.rich(
-        TextSpan(
-          style: const TextStyle(fontSize: 14),
-          children: [
-            TextSpan(text: country.toUpperCase() + ': '),
-            TextSpan(
-              text: league.toUpperCase(),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-      trailing: const Icon(
-        Icons.arrow_forward_ios,
-        size: 14,
-      ),
-      onTap: onTap(),
-    );*/
   }
 }
 
-class OthersGroupTextContainer extends StatelessWidget {
+class OthersGroupHeader extends StatelessWidget {
   final bool isDarkMode;
   final String text;
 
-  const OthersGroupTextContainer(
-      {Key? key, required this.isDarkMode, required this.text})
-      : super(key: key);
+  const OthersGroupHeader({
+    Key? key,
+    required this.isDarkMode,
+    required this.text,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +106,64 @@ class OthersGroupTextContainer extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: isDarkMode ? Colors.white70 : Colors.black45,
+        ),
+      ),
+    );
+  }
+}
+
+class OthersFixturesHeader extends StatelessWidget {
+  final bool isDarkMode;
+  final String country;
+  final String league;
+  final String? imageUrl;
+  final Function() onTap;
+
+  const OthersFixturesHeader({
+    Key? key,
+    required this.isDarkMode,
+    required this.country,
+    required this.league,
+    required this.onTap,
+    this.imageUrl,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => onTap(),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        width: double.infinity,
+        color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
+        child: Row(
+          children: [
+            SvgPicture.network(
+              imageUrl ?? '',
+              height: 14,
+            ),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text.rich(
+                TextSpan(
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: isDarkMode ? Colors.white70 : Colors.black45),
+                  children: [
+                    TextSpan(text: country.toUpperCase() + ': '),
+                    TextSpan(
+                      text: league.toUpperCase(),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+            ),
+          ],
         ),
       ),
     );
