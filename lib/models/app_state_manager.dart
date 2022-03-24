@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FootballNewsTab {
+  static const tabTitles = ['All Games', 'LIVE', 'Favourites', 'Standings'];
   static const int allGames = 0;
   static const int live = 1;
   static const int favorites = 2;
@@ -8,8 +9,8 @@ class FootballNewsTab {
 }
 
 class AppStateManager extends ChangeNotifier {
-
   int _selectedTab = FootballNewsTab.allGames;
+
   int get selectedTab => _selectedTab;
 
 
@@ -21,5 +22,14 @@ class AppStateManager extends ChangeNotifier {
   void goToRecipes() {
     _selectedTab = 1;
     notifyListeners();
+  }
+
+  String? getAppTitle() {
+    switch (selectedTab) {
+      case FootballNewsTab.favorites:
+        return 'FAVOURITES';
+      default:
+        return null;
+    }
   }
 }

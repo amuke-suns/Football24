@@ -60,6 +60,7 @@ class FootballNewsTheme {
 
   static ThemeData light() {
     return ThemeData(
+      primaryColor: Colors.green,
       brightness: Brightness.light,
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateColor.resolveWith(
@@ -88,6 +89,7 @@ class FootballNewsTheme {
 
   static ThemeData dark() {
     return ThemeData(
+      primaryColor: Colors.green,
       brightness: Brightness.dark,
       appBarTheme: const AppBarTheme(
         centerTitle: true,
