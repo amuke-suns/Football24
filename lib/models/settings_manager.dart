@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:football_news/models/app_cache.dart';
 
 class SettingsManager extends ChangeNotifier {

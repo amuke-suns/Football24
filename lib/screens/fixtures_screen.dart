@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:football_news/data/memory_repository.dart';
 import 'package:football_news/models/models.dart';
 import 'package:football_news/network/news_fixture_model.dart';
+import 'package:football_news/routes/router.gr.dart';
 import 'package:football_news/screens/screens.dart';
 import 'package:football_news/widgets/custom_appbar_title.dart';
 import 'package:football_news/widgets/headers.dart';
@@ -166,8 +168,6 @@ class FixturesScreen extends StatelessWidget {
   }
 
   void goToStandings(BuildContext context, leagueId) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return StandingsScreen(leagueId: leagueId);
-    }));
+    context.router.push(StandingsRoute(leagueId: leagueId));
   }
 }

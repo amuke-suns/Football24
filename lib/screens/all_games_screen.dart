@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:football_news/constants/constants.dart';
@@ -9,7 +10,7 @@ import 'package:football_news/network/news_fixture_model.dart';
 import 'package:football_news/network/news_service.dart';
 
 import "package:collection/collection.dart";
-import 'package:football_news/screens/screens.dart';
+import 'package:football_news/routes/router.gr.dart';
 import 'package:football_news/widgets/widgets.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
@@ -24,12 +25,23 @@ class AllGamesScreen extends StatefulWidget {
 class _AllGamesScreenState extends State<AllGamesScreen> {
   @override
   Widget build(BuildContext context) {
-    return _buildCompetitionLoader(context);
+    var dateManager = Provider.of<AppDateManager>(context, listen: true);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: CustomAppBarTitle(
+          title: null,
+          subtitle: dateManager.getAppDateDescription(),
+        ),
+        actions: const [SearchActionButton(), CalenderActionButton()],
+        centerTitle: true,
+        leading: const SettingsActionButton(),
+      ),
+      body: _buildCompetitionLoader(context),
+    );
   }
 
   Widget _buildCompetitionLoader(context) {
-    bool darkMode =
-        Provider.of<SettingsManager>(context, listen: true).darkMode;
 
     return FutureBuilder<Map<String, List<APIFixtureDetails>>>(
       future: getFixturesData(context),
@@ -45,6 +57,8 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
 
           var data = snapshot.data!;
           var keys = data.keys.toList();
+          bool darkMode =
+              Provider.of<SettingsManager>(context, listen: true).darkMode;
 
           return GroupedListView<String, String>(
             elements: keys,
@@ -105,12 +119,12 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
         total: fixtures.length,
       ),
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return FixturesScreen(
+        context.router.push(
+          FixturesRoute(
             title: fixtures.first.league.name,
             fixtures: fixtures,
-          );
-        }));
+          ),
+        );
       },
     );
   }

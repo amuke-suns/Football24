@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:football_news/models/models.dart';
 import 'package:intl/intl.dart';
 
@@ -39,7 +39,6 @@ class AppDateManager extends ChangeNotifier {
     return '$year/${year + 1}';
   }
 
-  // String getSelectedYearTimeline() => getYearTimeline(selectedYearIndex);
 
   void setDateList() {
     _days = [];
@@ -72,18 +71,7 @@ class AppDateManager extends ChangeNotifier {
     return days[selectedDayIndex].apiFormat();
   }
 
-  String? getAppDateDescription({required int selectedTab}) {
-    switch (selectedTab) {
-      case FootballNewsTab.allGames:
-        return days[selectedDayIndex].detailedFormat();
-      case FootballNewsTab.live:
-        return FootballNewsTab.tabTitles[selectedTab];
-      case FootballNewsTab.favorites:
-        return null;
-      case FootballNewsTab.standings:
-        return FootballNewsTab.tabTitles[selectedTab];
-      default:
-        return null;
-    }
+  String? getAppDateDescription() {
+    return days[selectedDayIndex].detailedFormat();
   }
 }

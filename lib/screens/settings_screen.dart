@@ -3,11 +3,9 @@ import 'package:football_news/models/models.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
-  final bool darkMode;
 
   const SettingsScreen({
     Key? key,
-    required this.darkMode
   }) : super(key: key);
 
   @override
@@ -29,6 +27,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget buildDarkModeRow() {
+    var manager = Provider.of<SettingsManager>(context, listen: true);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -36,9 +36,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           const Text('Dark Mode'),
           Switch(
-            value: widget.darkMode,
+            value: manager.darkMode,
             onChanged: (value) {
-              Provider.of<SettingsManager>(context, listen: false).darkMode = value;
+              manager.darkMode = value;
             },
           )
         ],

@@ -1,4 +1,3 @@
-export 'app_state_manager.dart';
 export 'settings_manager.dart';
 export 'app_cache.dart';
 export 'app_date.dart';

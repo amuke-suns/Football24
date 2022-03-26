@@ -3,7 +3,6 @@ import 'package:football_news/data/memory_repository.dart';
 import 'package:football_news/football_news_theme.dart';
 import 'package:football_news/models/models.dart';
 import 'package:football_news/routes/router.gr.dart';
-import 'package:football_news/screens/screens.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -25,10 +24,6 @@ class _FootballNewsAppState extends State<FootballNewsApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          lazy: true,
-          create: (_) => AppStateManager(),
-        ),
         ChangeNotifierProvider(
           lazy: true,
           create: (_) => AppDateManager()..init(),

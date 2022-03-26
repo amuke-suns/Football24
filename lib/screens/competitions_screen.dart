@@ -25,12 +25,22 @@ class CompetitionsScreen extends StatefulWidget {
 class _CompetitionsScreenState extends State<CompetitionsScreen> {
   @override
   Widget build(BuildContext context) {
-    return _buildStandingsLoader(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: CustomAppBarTitle(
+          title: null,
+          subtitle: MyTabs.titles[MyTabs.standings],
+        ),
+        leading: const SettingsActionButton(),
+        actions: const [
+          SearchActionButton()
+        ],
+      ),
+      body: _buildStandingsLoader(context),
+    );
   }
 
   Widget _buildStandingsLoader(context) {
-    bool darkMode =
-        Provider.of<SettingsManager>(context, listen: true).darkMode;
 
     return FutureBuilder<Map<String, List<APILeagueDesc>>>(
       future: getCompetitionsData(context),
@@ -44,6 +54,8 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
 
           var data = snapshot.data!;
           var keys = data.keys.toList();
+          bool darkMode =
+              Provider.of<SettingsManager>(context, listen: false).darkMode;
 
           return GroupedListView<String, String>(
             elements: keys,

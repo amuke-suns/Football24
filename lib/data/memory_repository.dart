@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:football_news/models/models.dart';
 
 class MemoryRepository with ChangeNotifier {

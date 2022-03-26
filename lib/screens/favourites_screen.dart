@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:football_news/constants/constants.dart';
 import 'package:football_news/data/memory_repository.dart';
 import 'package:football_news/models/models.dart';
 import 'package:football_news/network/news_league_model.dart';
 import 'package:football_news/network/news_service.dart';
+import 'package:football_news/routes/router.gr.dart';
 import 'package:football_news/screens/screens.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +23,16 @@ class FavouritesScreen extends StatefulWidget {
 class _FavouritesScreenState extends State<FavouritesScreen> {
   @override
   Widget build(BuildContext context) {
-    return _buildStandingsLoader(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: CustomAppBarTitle(
+          title: MyTabs.titles[MyTabs.favorites],
+          subtitle: null,
+        ),
+        leading: const SettingsActionButton(),
+      ),
+      body: _buildStandingsLoader(context),
+    );
   }
 
   Widget _buildFavouriteCard(
@@ -34,12 +46,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         total: null,
       ),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return StandingsScreen(leagueId: lg.league.id);
-          }),
-        );
+        context.router.push(StandingsRoute(leagueId: lg.league.id));
       },
     );
   }
