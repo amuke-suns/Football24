@@ -13,6 +13,8 @@
 import 'package:auto_route/auto_route.dart' as _i2;
 import 'package:flutter/material.dart' as _i3;
 
+import '../network/news_fixture_model.dart' as _i4;
+import '../network/news_league_model.dart' as _i5;
 import '../screens/screens.dart' as _i1;
 
 class AppRouter extends _i2.RootStackRouter {
@@ -25,6 +27,10 @@ class AppRouter extends _i2.RootStackRouter {
       return _i2.MaterialPageX<dynamic>(
           routeData: routeData, child: const _i1.Home());
     },
+    SettingsRoute.name: (routeData) {
+      return _i2.MaterialPageX<dynamic>(
+          routeData: routeData, child: const _i1.SettingsScreen());
+    },
     AllGamesRouter.name: (routeData) {
       return _i2.MaterialPageX<dynamic>(
           routeData: routeData, child: const _i2.EmptyRouterPage());
@@ -35,7 +41,7 @@ class AppRouter extends _i2.RootStackRouter {
     },
     FavouriteRouter.name: (routeData) {
       return _i2.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i1.FavouritesScreen());
+          routeData: routeData, child: const _i2.EmptyRouterPage());
     },
     CompetitionsRouter.name: (routeData) {
       return _i2.MaterialPageX<dynamic>(
@@ -45,9 +51,34 @@ class AppRouter extends _i2.RootStackRouter {
       return _i2.MaterialPageX<dynamic>(
           routeData: routeData, child: const _i1.AllGamesScreen());
     },
+    FixturesRoute.name: (routeData) {
+      final args = routeData.argsAs<FixturesRouteArgs>();
+      return _i2.MaterialPageX<dynamic>(
+          routeData: routeData,
+          child: _i1.FixturesScreen(
+              key: args.key, title: args.title, fixtures: args.fixtures));
+    },
+    StandingsRoute.name: (routeData) {
+      final args = routeData.argsAs<StandingsRouteArgs>();
+      return _i2.MaterialPageX<dynamic>(
+          routeData: routeData,
+          child: _i1.StandingsScreen(
+              key: args.key, leagueId: args.leagueId, year: args.year));
+    },
+    FavouritesRoute.name: (routeData) {
+      return _i2.MaterialPageX<dynamic>(
+          routeData: routeData, child: const _i1.FavouritesScreen());
+    },
     CompetitionsRoute.name: (routeData) {
       return _i2.MaterialPageX<dynamic>(
           routeData: routeData, child: const _i1.CompetitionsScreen());
+    },
+    LeaguesRoute.name: (routeData) {
+      final args = routeData.argsAs<LeaguesRouteArgs>();
+      return _i2.MaterialPageX<dynamic>(
+          routeData: routeData,
+          child: _i1.LeaguesScreen(
+              key: args.key, title: args.title, leagues: args.leagues));
     }
   };
 
@@ -59,19 +90,35 @@ class AppRouter extends _i2.RootStackRouter {
               parent: Home.name,
               children: [
                 _i2.RouteConfig(AllGamesRoute.name,
-                    path: '', parent: AllGamesRouter.name)
+                    path: '', parent: AllGamesRouter.name),
+                _i2.RouteConfig(FixturesRoute.name,
+                    path: 'leagueName', parent: AllGamesRouter.name),
+                _i2.RouteConfig(StandingsRoute.name,
+                    path: 'standings', parent: AllGamesRouter.name)
               ]),
           _i2.RouteConfig(LiveRouter.name, path: 'live', parent: Home.name),
           _i2.RouteConfig(FavouriteRouter.name,
-              path: 'favourites', parent: Home.name),
+              path: 'favourites',
+              parent: Home.name,
+              children: [
+                _i2.RouteConfig(FavouritesRoute.name,
+                    path: '', parent: FavouriteRouter.name),
+                _i2.RouteConfig(StandingsRoute.name,
+                    path: 'standings', parent: FavouriteRouter.name)
+              ]),
           _i2.RouteConfig(CompetitionsRouter.name,
               path: 'competitions',
               parent: Home.name,
               children: [
                 _i2.RouteConfig(CompetitionsRoute.name,
-                    path: '', parent: CompetitionsRouter.name)
+                    path: '', parent: CompetitionsRouter.name),
+                _i2.RouteConfig(LeaguesRoute.name,
+                    path: 'league', parent: CompetitionsRouter.name),
+                _i2.RouteConfig(StandingsRoute.name,
+                    path: 'standings', parent: CompetitionsRouter.name)
               ])
-        ])
+        ]),
+        _i2.RouteConfig(SettingsRoute.name, path: '/settings')
       ];
 }
 
@@ -82,6 +129,14 @@ class Home extends _i2.PageRouteInfo<void> {
       : super(Home.name, path: '/', initialChildren: children);
 
   static const String name = 'Home';
+}
+
+/// generated route for
+/// [_i1.SettingsScreen]
+class SettingsRoute extends _i2.PageRouteInfo<void> {
+  const SettingsRoute() : super(SettingsRoute.name, path: '/settings');
+
+  static const String name = 'SettingsRoute';
 }
 
 /// generated route for
@@ -102,9 +157,11 @@ class LiveRouter extends _i2.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i1.FavouritesScreen]
+/// [_i2.EmptyRouterPage]
 class FavouriteRouter extends _i2.PageRouteInfo<void> {
-  const FavouriteRouter() : super(FavouriteRouter.name, path: 'favourites');
+  const FavouriteRouter({List<_i2.PageRouteInfo>? children})
+      : super(FavouriteRouter.name,
+            path: 'favourites', initialChildren: children);
 
   static const String name = 'FavouriteRouter';
 }
@@ -128,9 +185,105 @@ class AllGamesRoute extends _i2.PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [_i1.FixturesScreen]
+class FixturesRoute extends _i2.PageRouteInfo<FixturesRouteArgs> {
+  FixturesRoute(
+      {_i3.Key? key,
+      required String title,
+      required List<_i4.APIFixtureDetails> fixtures})
+      : super(FixturesRoute.name,
+            path: 'leagueName',
+            args:
+                FixturesRouteArgs(key: key, title: title, fixtures: fixtures));
+
+  static const String name = 'FixturesRoute';
+}
+
+class FixturesRouteArgs {
+  const FixturesRouteArgs(
+      {this.key, required this.title, required this.fixtures});
+
+  final _i3.Key? key;
+
+  final String title;
+
+  final List<_i4.APIFixtureDetails> fixtures;
+
+  @override
+  String toString() {
+    return 'FixturesRouteArgs{key: $key, title: $title, fixtures: $fixtures}';
+  }
+}
+
+/// generated route for
+/// [_i1.StandingsScreen]
+class StandingsRoute extends _i2.PageRouteInfo<StandingsRouteArgs> {
+  StandingsRoute({_i3.Key? key, required int leagueId, int year = 2021})
+      : super(StandingsRoute.name,
+            path: 'standings',
+            args: StandingsRouteArgs(key: key, leagueId: leagueId, year: year));
+
+  static const String name = 'StandingsRoute';
+}
+
+class StandingsRouteArgs {
+  const StandingsRouteArgs(
+      {this.key, required this.leagueId, this.year = 2021});
+
+  final _i3.Key? key;
+
+  final int leagueId;
+
+  final int year;
+
+  @override
+  String toString() {
+    return 'StandingsRouteArgs{key: $key, leagueId: $leagueId, year: $year}';
+  }
+}
+
+/// generated route for
+/// [_i1.FavouritesScreen]
+class FavouritesRoute extends _i2.PageRouteInfo<void> {
+  const FavouritesRoute() : super(FavouritesRoute.name, path: '');
+
+  static const String name = 'FavouritesRoute';
+}
+
+/// generated route for
 /// [_i1.CompetitionsScreen]
 class CompetitionsRoute extends _i2.PageRouteInfo<void> {
   const CompetitionsRoute() : super(CompetitionsRoute.name, path: '');
 
   static const String name = 'CompetitionsRoute';
+}
+
+/// generated route for
+/// [_i1.LeaguesScreen]
+class LeaguesRoute extends _i2.PageRouteInfo<LeaguesRouteArgs> {
+  LeaguesRoute(
+      {_i3.Key? key,
+      required String title,
+      required List<_i5.APILeagueDesc> leagues})
+      : super(LeaguesRoute.name,
+            path: 'league',
+            args: LeaguesRouteArgs(key: key, title: title, leagues: leagues));
+
+  static const String name = 'LeaguesRoute';
+}
+
+class LeaguesRouteArgs {
+  const LeaguesRouteArgs(
+      {this.key, required this.title, required this.leagues});
+
+  final _i3.Key? key;
+
+  final String title;
+
+  final List<_i5.APILeagueDesc> leagues;
+
+  @override
+  String toString() {
+    return 'LeaguesRouteArgs{key: $key, title: $title, leagues: $leagues}';
+  }
 }

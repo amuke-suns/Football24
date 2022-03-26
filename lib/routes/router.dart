@@ -19,10 +19,10 @@ import 'package:football_news/screens/screens.dart';
             page: EmptyRouterPage,
             // this is a list of nested routes
             children: [
-              // the empty string path indicates this is the first route
+              // the empty string path is the initial
               AutoRoute(path: '', page: AllGamesScreen),
-              // the ':postId' is used to create dynamic segment
-              // AutoRoute(path: ':postId', page: SinglePostPage),
+              AutoRoute(path: 'leagueName', page: FixturesScreen),
+              AutoRoute(path: 'standings', page: StandingsScreen)
             ],
           ),
           AutoRoute(
@@ -34,7 +34,11 @@ import 'package:football_news/screens/screens.dart';
             path: 'favourites',
             name: 'FavouriteRouter',
             // no need for EmptyRouterPage since there are no nested routes
-            page: FavouritesScreen,
+            page: EmptyRouterPage,
+            children: [
+              AutoRoute(path: '', page: FavouritesScreen),
+              AutoRoute(path: 'standings', page: StandingsScreen)
+            ]
           ),
           AutoRoute(
             path: 'competitions',
@@ -43,10 +47,16 @@ import 'package:football_news/screens/screens.dart';
             page: EmptyRouterPage,
             children: [
               AutoRoute(path: '', page: CompetitionsScreen),
+              AutoRoute(path: 'league', page: LeaguesScreen),
+              AutoRoute(path: 'standings', page: StandingsScreen)
             ],
           ),
         ]
-    )
+    ),
+    AutoRoute(
+      path: '/settings',
+      page: SettingsScreen,
+    ),
   ],
 )
 
