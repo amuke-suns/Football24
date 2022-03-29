@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:football_news/data/memory_repository.dart';
-import 'package:football_news/football_news_theme.dart';
-import 'package:football_news/models/models.dart';
-import 'package:football_news/routes/router.gr.dart';
+import 'package:football_news/business_logic/routes/router.gr.dart';
+import 'package:football_news/business_logic/view_models/favourites_view_model.dart';
+import 'package:football_news/business_logic/view_models/settings_view_model.dart';
+import 'package:football_news/services/service_locator.dart';
+import 'package:football_news/ui/theme.dart';
 import 'package:provider/provider.dart';
 
+import 'business_logic/view_models/games_date_manager.dart';
+
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  setupServiceLocator();
   runApp(const FootballNewsApp());
 }
 
@@ -25,19 +28,13 @@ class _FootballNewsAppState extends State<FootballNewsApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          lazy: true,
-          create: (_) => AppDateManager()..init(),
+          create: (_) => serviceLocator<SettingsViewModel>(),
         ),
         ChangeNotifierProvider(
-          lazy: true,
-          create: (_) => SettingsManager()..init(),
-        ),
-        ChangeNotifierProvider(
-          lazy: true,
-          create: (_) => MemoryRepository()..init(),
+          create: (_) => serviceLocator<FavouritesViewModel>(),
         ),
       ],
-      child: Consumer<SettingsManager>(
+      child: Consumer<SettingsViewModel>(
         builder: (context, manager, child) {
           ThemeData theme;
           if (manager.darkMode) {

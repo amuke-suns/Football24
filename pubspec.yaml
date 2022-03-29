@@ -22,6 +22,7 @@ dependencies:
   shared_preferences: ^2.0.13
   intl: ^0.17.0
   auto_route: ^3.2.4
+  get_it: ^7.2.0
 
 dev_dependencies:
   flutter_test:
