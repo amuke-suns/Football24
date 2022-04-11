@@ -2,15 +2,13 @@ class Favourite {
   final int id;
   final String country;
   final String league;
-  final String flag;
-  final String type;
+  final String? flag;
 
   Favourite({
     required this.id,
     required this.country,
     required this.league,
     required this.flag,
-    required this.type,
   });
 
   factory Favourite.fromJson(Map<dynamic, dynamic> json) {
@@ -19,7 +17,13 @@ class Favourite {
       country: json['country'],
       league: json['league'],
       flag: json['flag'],
-      type: json['type'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'country': country,
+    'league': league,
+    'flag': flag,
+  };
 }
