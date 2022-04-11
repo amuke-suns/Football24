@@ -16,7 +16,7 @@ class WebApiFake implements WebApi {
 
   @override
   Future<FixturesQuery> getAllFixtures({required String date}) async {
-    final jsonString = await rootBundle.loadString('assets/fixture1.json');
+    final jsonString = await rootBundle.loadString('assets/fixture2.json');
     FixturesQuery decodedData = FixturesQuery.fromJson(jsonDecode(jsonString));
     return decodedData;
   }

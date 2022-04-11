@@ -1,12 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:football_news/business_logic/models/favourite.dart';
 import 'package:football_news/ui/widgets/custom_appbar_title.dart';
 import 'package:football_news/ui/widgets/headers.dart';
 import 'package:provider/provider.dart';
 
 import '../../business_logic/models/fixtures_query.dart';
 import '../../business_logic/routes/router.gr.dart';
-import '../../business_logic/view_models/memory_repository.dart';
+import '../../business_logic/view_models/games_view_model.dart';
 import '../../business_logic/view_models/settings_view_model.dart';
 
 class FixturesScreen extends StatelessWidget {
@@ -21,15 +22,11 @@ class FixturesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool darkMode =
-        Provider.of<SettingsViewModel>(context, listen: false).darkMode;
-
-    var favIdList =
-        Provider.of<MemoryRepository>(context, listen: true).favouriteIds;
+    final model = Provider.of<GamesViewModel>(context, listen: true);
+    bool darkMode = Provider.of<SettingsViewModel>(context, listen: false).darkMode;
 
     var league = fixtures.first.league;
     int leagueId = league.id;
-    bool isFavourite = favIdList.contains(league.id.toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -40,21 +37,21 @@ class FixturesScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          isFavourite
-              ? FavouriteFixturesHeader(
-                  isDarkMode: darkMode,
-                  country: league.country,
-                  league: league.name,
-                  imageUrl: league.flag,
-                  onTap: () => goToStandings(context, leagueId),
-                )
-              : OthersFixturesHeader(
-                  isDarkMode: darkMode,
-                  country: league.country,
-                  league: league.name,
-                  imageUrl: league.flag,
-                  onTap: () => goToStandings(context, leagueId),
-                ),
+          model.isFavourite(leagueId)
+          ? FavouriteFixturesHeader(
+        isDarkMode: darkMode,
+        country: league.country,
+        league: league.name,
+        imageUrl: league.flag,
+        onTap: () => goToStandings(context, leagueId),
+      )
+          : OthersFixturesHeader(
+        isDarkMode: darkMode,
+        country: league.country,
+        league: league.name,
+        imageUrl: league.flag,
+        onTap: () => goToStandings(context, leagueId),
+      ),
           Flexible(
             child: ListView(
               children: [
@@ -80,11 +77,18 @@ class FixturesScreen extends StatelessWidget {
                     ),
                   ),
                 _buildStandingsTile(context, leagueId: leagueId),
-                _buildFavouriteStarTile(
-                  context,
-                  isFavourite: isFavourite,
-                  leagueId: leagueId,
-                ),
+                Consumer<GamesViewModel>(builder: (context, model, child) {
+                  return _buildFavouriteStarTile(
+                    context,
+                    favourite: Favourite(
+                      id: leagueId,
+                      country: league.country,
+                      league: league.name,
+                      flag: league.flag,
+                    ),
+                    isFavourite: model.isFavourite(leagueId),
+                  );
+                }),
               ],
             ),
           ),
@@ -124,9 +128,11 @@ class FixturesScreen extends StatelessWidget {
 
   ListTile _buildFavouriteStarTile(
     BuildContext context, {
+    required Favourite favourite,
     required bool isFavourite,
-    required int leagueId,
   }) {
+    final model = context.watch<GamesViewModel>();
+
     return ListTile(
       leading: isFavourite
           ? const Icon(
@@ -141,12 +147,11 @@ class FixturesScreen extends StatelessWidget {
             : 'Add to favourite competitions',
       ),
       onTap: () {
-        /*var manager = Provider.of<MemoryRepository>(context, listen: false);
         if (isFavourite) {
-          manager.deleteId(leagueId);
+          model.removeFavourites(favourite.id);
         } else {
-          manager.insertId(leagueId);
-        }*/
+          model.saveToFavourites(favourite);
+        }
       },
     );
   }

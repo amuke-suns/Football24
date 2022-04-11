@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:football_news/business_logic/models/favourite.dart';
-import 'package:football_news/business_logic/models/league_query.dart';
+import 'package:football_news/business_logic/view_models/games_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../business_logic/routes/router.gr.dart';
 import '../../business_logic/utils/constants.dart';
-import '../../business_logic/view_models/favourites_view_model.dart';
-import '../../services/service_locator.dart';
 import '../widgets/widgets.dart';
 
 class FavouritesScreen extends StatefulWidget {
@@ -20,7 +18,6 @@ class FavouritesScreen extends StatefulWidget {
 }
 
 class _FavouritesScreenState extends State<FavouritesScreen> {
-  FavouritesViewModel model = serviceLocator<FavouritesViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +51,12 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
 
 
   Widget _buildStandingsLoader(context) {
+    final model = Provider.of<GamesViewModel>(context, listen: true);
     /*bool darkMode =
         Provider.of<SettingsManager>(context, listen: true).darkMode;*/
 
     return FutureBuilder<List<Favourite>>(
-      future: model.loadFavourites(),
+      future: Future.value(model.favourites),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {

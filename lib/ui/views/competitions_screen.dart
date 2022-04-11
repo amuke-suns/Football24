@@ -5,13 +5,13 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:football_news/business_logic/models/league_query.dart';
 
 import "package:collection/collection.dart";
+import 'package:football_news/business_logic/view_models/games_view_model.dart';
 import 'package:football_news/ui/views/screens.dart';
 import 'package:football_news/ui/widgets/widgets.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
 
 import '../../business_logic/utils/constants.dart';
-import '../../business_logic/view_models/memory_repository.dart';
 import '../../business_logic/view_models/settings_view_model.dart';
 
 class CompetitionsScreen extends StatefulWidget {
@@ -142,8 +142,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
   Future<Map<String, List<LeagueDesc>>> getCompetitionsData(
     BuildContext context,
   ) async {
-    List<String> favIdList =
-        Provider.of<MemoryRepository>(context, listen: true).favouriteIds;
+    final favIdList = Provider.of<GamesViewModel>(context, listen: false).favIds;
 
     // load the sample json string
     final jsonString = await rootBundle.loadString('assets/league1.json');
@@ -155,7 +154,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
     // group by country name
     Map<String, List<LeagueDesc>> groupedMap =
         decodedData.response.groupListsBy((element) {
-      if (favIdList.contains(element.league.id.toString())) {
+      if (favIdList.contains(element.league.id)) {
         return kFavouriteKey;
       }
       return element.country.name;

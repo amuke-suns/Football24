@@ -10,14 +10,14 @@ class StorageServiceImpl implements StorageService{
   static const sharedPrefDarkMode = 'dark_mode';
 
   @override
-  Future<List<Favourite>> getFavoriteCompetitions() async {
+  Future<List<Favourite>> getAllFavoriteCompetitions() async {
     String data = await _getStringFromPreferences(sharedPrefFavouriteKey);
     List<Favourite> favs = _deserializeFavourites(data);
     return Future<List<Favourite>>.value(favs);
   }
 
   @override
-  Future<void> saveFavoriteCompetitions(List<Favourite> data) {
+  Future<void> saveNewFavourites(List<Favourite> data) {
     String jsonString = jsonEncode(data);
     _saveStringToPreferences(sharedPrefFavouriteKey, jsonString);
     return Future.value(null);
@@ -37,7 +37,7 @@ class StorageServiceImpl implements StorageService{
 
   @override
   Future<bool> isFavouriteId(int id) async {
-    var favourites = await getFavoriteCompetitions();
+    var favourites = await getAllFavoriteCompetitions();
     return favourites.any((fav) => fav.id == id);
   }
 
@@ -45,7 +45,7 @@ class StorageServiceImpl implements StorageService{
     if (data.isEmpty) {
       return [];
     }
-    List<Map> favList = jsonDecode(data);
+    List<dynamic> favList = jsonDecode(data);
     return favList.map((favMap) => Favourite.fromJson(favMap)).toList();
   }
 

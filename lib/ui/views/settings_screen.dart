@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:football_news/services/service_locator.dart';
+import 'package:provider/provider.dart';
 
 import '../../business_logic/view_models/settings_view_model.dart';
 
@@ -15,7 +15,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
 
-  SettingsViewModel model = serviceLocator<SettingsViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +24,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         centerTitle: true,
       ),
       body: Center(
-        child: buildDarkModeRow(),
+        child: buildDarkModeRow(context),
       ),
     );
   }
 
-  Widget buildDarkModeRow() {
-
+  Widget buildDarkModeRow(BuildContext context) {
+    final model = context.watch<SettingsViewModel>();
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
