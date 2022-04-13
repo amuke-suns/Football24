@@ -36,6 +36,14 @@ class LeagueDesc {
       _$LeagueDescFromJson(json);
 
   Map<String, dynamic> toJson() => _$LeagueDescToJson(this);
+
+  List<int> getSeasonYears() {
+    List<int> years = [];
+    for (var season in seasons) {
+      years.add(season.year);
+    }
+    return years;
+  }
 }
 
 @JsonSerializable()
