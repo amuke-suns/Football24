@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:football_news/business_logic/utils/methods_utils.dart';
 import 'package:football_news/business_logic/view_models/view_models.dart';
 import 'package:football_news/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../business_logic/models/standings_query.dart';
-import '../../business_logic/utils/constants.dart';
 
 
 class StandingsScreen extends StatefulWidget {
@@ -161,7 +161,7 @@ class _StandingsScreenState extends State<StandingsScreen> {
                 child: ListTile(
                   tileColor:
                       year == widget.year ? Colors.grey : null,
-                  shape: kListTileBorder,
+                  shape: MethodUtils.getTileShapeBorder(context),
                   title: Text(
                     model.getYearTimeline(year),
                     style: TextStyle(

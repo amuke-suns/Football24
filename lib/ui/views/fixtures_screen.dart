@@ -20,7 +20,8 @@ class FixturesScreen extends StatelessWidget with ToStandingsMixin {
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<GamesViewModel>(context, listen: true);
-    bool darkMode = Provider.of<SettingsViewModel>(context, listen: false).darkMode;
+    bool darkMode =
+        Provider.of<SettingsViewModel>(context, listen: false).darkMode;
 
     var league = fixtures.first.league;
     int leagueId = league.id;
@@ -35,20 +36,20 @@ class FixturesScreen extends StatelessWidget with ToStandingsMixin {
       body: Column(
         children: [
           model.isFavourite(leagueId)
-          ? FavouriteFixturesHeader(
-        isDarkMode: darkMode,
-        country: league.country,
-        league: league.name,
-        imageUrl: league.flag,
-        onTap: () => navigateToStandings(context, leagueId),
-      )
-          : OthersFixturesHeader(
-        isDarkMode: darkMode,
-        country: league.country,
-        league: league.name,
-        imageUrl: league.flag,
-        onTap: () => navigateToStandings(context, leagueId),
-      ),
+              ? FavouriteFixturesHeader(
+                  isDarkMode: darkMode,
+                  country: league.country,
+                  league: league.name,
+                  imageUrl: league.flag,
+                  onTap: () => goToStandingsWithId(context, leagueId),
+                )
+              : OthersFixturesHeader(
+                  isDarkMode: darkMode,
+                  country: league.country,
+                  league: league.name,
+                  imageUrl: league.flag,
+                  onTap: () => goToStandingsWithId(context, leagueId),
+                ),
           Flexible(
             child: ListView(
               children: [
@@ -72,6 +73,7 @@ class FixturesScreen extends StatelessWidget with ToStandingsMixin {
                         ),
                       ],
                     ),
+                    shape: MethodUtils.getTileShapeBorder(context),
                   ),
                 _buildStandingsTile(context, leagueId: leagueId),
                 Consumer<GamesViewModel>(builder: (context, model, child) {
@@ -165,11 +167,7 @@ class FixturesScreen extends StatelessWidget with ToStandingsMixin {
         Icons.arrow_forward_ios,
         size: 18,
       ),
-      onTap: () => navigateToStandings(context, leagueId),
+      onTap: () => goToStandingsWithId(context, leagueId),
     );
-  }
-
-  void navigateToStandings(BuildContext context, leagueId) {
-    goToStandingsWithId(context, leagueId);
   }
 }

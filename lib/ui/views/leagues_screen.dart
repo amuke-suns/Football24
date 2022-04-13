@@ -23,6 +23,7 @@ class LeaguesScreen extends StatelessWidget with ToStandingsMixin {
 
           return ListTile(
             title: Text(league.name),
+            shape: MethodUtils.getTileShapeBorder(context),
             onTap: () async {
               goToStandingsWithId(context, league.id);
             },

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:football_news/business_logic/utils/constants.dart';
+import 'package:football_news/business_logic/utils/methods_utils.dart';
 import 'package:football_news/business_logic/view_models/calendar_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +58,7 @@ class CalenderActionButton extends StatelessWidget {
       },
       child: ListTile(
         tileColor: i == model.selectedDayIndex ? Colors.grey : null,
-        shape: kListTileBorder,
+        shape: MethodUtils.getTileShapeBorder(context),
         title: Text(
           model.days[i].simpleFormat(),
           style: TextStyle(

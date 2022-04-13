@@ -38,6 +38,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> with ToStandingsMix
         text: '${favourite.country}: ${favourite.league}',
         total: null,
       ),
+      shape: MethodUtils.getTileShapeBorder(context),
       onTap: () {
         goToStandingsWithId(context, favourite.id);
       },

@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:football_news/business_logic/models/fixtures_query.dart';
 import 'package:football_news/business_logic/routes/router.gr.dart';
-import 'package:football_news/business_logic/utils/constants.dart';
+import 'package:football_news/business_logic/utils/utils.dart';
 
 import 'package:football_news/ui/widgets/widgets.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -107,6 +107,7 @@ class _AllGamesScreenState extends State<AllGamesScreen> {
         text: key,
         total: fixtures.length,
       ),
+      shape: MethodUtils.getTileShapeBorder(context),
       onTap: () {
         context.router.push(
           FixturesRoute(

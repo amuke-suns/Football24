@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class MyTabs {
   static const titles = ['All Games', 'LIVE', 'Favourites', 'Standings'];
   static const int allGames = 0;
@@ -11,10 +9,3 @@ class MyTabs {
 // the whitespace is to ensure it's top of the grouped list view
 const kFavouriteKey = ' FAVOURITE COMPETITIONS';
 const kOtherCompetitionsKey = 'OTHER COMPETITIONS [A-Z]';
-
-const kListTileBorder = RoundedRectangleBorder(
-  side: BorderSide(
-    color: Colors.black,
-    width: 0.25,
-  ),
-);

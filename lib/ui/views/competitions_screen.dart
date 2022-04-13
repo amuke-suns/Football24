@@ -91,6 +91,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> with ToStanding
               text: '${desc.country.name}: ${desc.league.name}',
               total: null,
             ),
+            shape: MethodUtils.getTileShapeBorder(context),
             onTap: () async {
               goToStandingsWithDesc(context, desc);
             },
@@ -113,6 +114,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> with ToStanding
             text: key,
             total: null,
           ),
+          shape: MethodUtils.getTileShapeBorder(context),
           onTap: () {
             context.router.push(LeaguesRoute(title: key, leagues: leagues));
           },
