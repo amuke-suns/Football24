@@ -1,16 +1,13 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:football_news/business_logic/models/favourite.dart';
-import 'package:football_news/ui/widgets/custom_appbar_title.dart';
-import 'package:football_news/ui/widgets/headers.dart';
+import 'package:football_news/business_logic/utils/utils.dart';
+import 'package:football_news/business_logic/view_models/view_models.dart';
+import 'package:football_news/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../business_logic/models/fixtures_query.dart';
-import '../../business_logic/routes/router.gr.dart';
-import '../../business_logic/view_models/games_view_model.dart';
-import '../../business_logic/view_models/settings_view_model.dart';
 
-class FixturesScreen extends StatelessWidget {
+class FixturesScreen extends StatelessWidget with ToStandingsMixin {
   final String title;
   final List<FixtureDetails> fixtures;
 
@@ -43,14 +40,14 @@ class FixturesScreen extends StatelessWidget {
         country: league.country,
         league: league.name,
         imageUrl: league.flag,
-        onTap: () => goToStandings(context, leagueId),
+        onTap: () => navigateToStandings(context, leagueId),
       )
           : OthersFixturesHeader(
         isDarkMode: darkMode,
         country: league.country,
         league: league.name,
         imageUrl: league.flag,
-        onTap: () => goToStandings(context, leagueId),
+        onTap: () => navigateToStandings(context, leagueId),
       ),
           Flexible(
             child: ListView(
@@ -168,11 +165,11 @@ class FixturesScreen extends StatelessWidget {
         Icons.arrow_forward_ios,
         size: 18,
       ),
-      onTap: () => goToStandings(context, leagueId),
+      onTap: () => navigateToStandings(context, leagueId),
     );
   }
 
-  void goToStandings(BuildContext context, leagueId) {
-    context.router.push(StandingsRoute(leagueId: leagueId));
+  void navigateToStandings(BuildContext context, leagueId) {
+    goToStandingsWithId(context, leagueId);
   }
 }

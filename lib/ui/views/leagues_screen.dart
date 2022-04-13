@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:football_news/business_logic/models/league_query.dart';
-import 'package:football_news/ui/views/screens.dart';
+import 'package:football_news/business_logic/utils/utils.dart';
 
-class LeaguesScreen extends StatelessWidget {
+class LeaguesScreen extends StatelessWidget with ToStandingsMixin {
   final String title;
   final List<LeagueDesc> leagues;
 
@@ -24,9 +24,7 @@ class LeaguesScreen extends StatelessWidget {
           return ListTile(
             title: Text(league.name),
             onTap: () async {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return StandingsScreen(leagueId: league.id);
-              }));
+              goToStandingsWithId(context, league.id);
             },
           );
         },

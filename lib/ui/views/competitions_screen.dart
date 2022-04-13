@@ -1,18 +1,13 @@
-import 'dart:convert';
-
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:football_news/business_logic/models/league_query.dart';
+import 'package:football_news/business_logic/routes/router.gr.dart';
+import 'package:football_news/business_logic/utils/utils.dart';
 
-import "package:collection/collection.dart";
-import 'package:football_news/business_logic/view_models/games_view_model.dart';
-import 'package:football_news/ui/views/screens.dart';
+import 'package:football_news/business_logic/view_models/view_models.dart';
 import 'package:football_news/ui/widgets/widgets.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
-
-import '../../business_logic/utils/constants.dart';
-import '../../business_logic/view_models/settings_view_model.dart';
 
 class CompetitionsScreen extends StatefulWidget {
   const CompetitionsScreen({Key? key}) : super(key: key);
@@ -21,7 +16,7 @@ class CompetitionsScreen extends StatefulWidget {
   State<CompetitionsScreen> createState() => _CompetitionsScreenState();
 }
 
-class _CompetitionsScreenState extends State<CompetitionsScreen> {
+class _CompetitionsScreenState extends State<CompetitionsScreen> with ToStandingsMixin{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,17 +26,17 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
           subtitle: MyTabs.titles[MyTabs.standings],
         ),
         leading: const SettingsActionButton(),
-        actions: const [
-          SearchActionButton()
-        ],
+        actions: const [SearchActionButton()],
       ),
       body: _buildStandingsLoader(context),
     );
   }
 
   Widget _buildStandingsLoader(context) {
+    final model = Provider.of<GamesViewModel>(context, listen: true);
+
     return FutureBuilder<Map<String, List<LeagueDesc>>>(
-      future: getCompetitionsData(context),
+      future: model.getCompetitionData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -71,7 +66,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
               List<LeagueDesc> leagues = data[key]!;
 
               return key == kFavouriteKey
-                  ? _buildFavouriteList(context, leagues)
+                  ? _buildFavouriteList(context, model.sortLeagueDescs(leagues))
                   : _buildCompetitionCard(leagues, key, context);
             },
           );
@@ -86,9 +81,6 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
 
   Widget _buildFavouriteList(
       BuildContext context, List<LeagueDesc> leaguesDesc) {
-    // sort the items
-    leaguesDesc.sort((a, b) => a.country.name.compareTo(b.country.name));
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -100,9 +92,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
               total: null,
             ),
             onTap: () async {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return StandingsScreen(leagueId: desc.league.id);
-              }));
+              goToStandingsWithDesc(context, desc);
             },
           )
       ],
@@ -124,42 +114,10 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> {
             total: null,
           ),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) {
-                return LeaguesScreen(
-                  title: key,
-                  leagues: leagues,
-                );
-              }),
-            );
+            context.router.push(LeaguesRoute(title: key, leagues: leagues));
           },
         ),
       ],
     );
-  }
-
-  Future<Map<String, List<LeagueDesc>>> getCompetitionsData(
-    BuildContext context,
-  ) async {
-    final favIdList = Provider.of<GamesViewModel>(context, listen: false).favIds;
-
-    // load the sample json string
-    final jsonString = await rootBundle.loadString('assets/league1.json');
-    // final jsonString = await NewsService().getAllCompetitions();
-
-    LeagueQuery decodedData =
-        LeagueQuery.fromJson(jsonDecode(jsonString));
-
-    // group by country name
-    Map<String, List<LeagueDesc>> groupedMap =
-        decodedData.response.groupListsBy((element) {
-      if (favIdList.contains(element.league.id)) {
-        return kFavouriteKey;
-      }
-      return element.country.name;
-    });
-
-    return groupedMap;
   }
 }

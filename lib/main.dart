@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:football_news/business_logic/routes/router.gr.dart';
-import 'package:football_news/business_logic/view_models/games_view_model.dart';
-import 'package:football_news/business_logic/view_models/settings_view_model.dart';
+import 'package:football_news/business_logic/view_models/view_models.dart';
 import 'package:football_news/services/service_locator.dart';
 import 'package:football_news/ui/theme.dart';
 import 'package:provider/provider.dart';
-
 
 void main() async {
   setupServiceLocator();
@@ -26,12 +24,10 @@ class _FootballNewsAppState extends State<FootballNewsApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => SettingsViewModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => GamesViewModel(),
-        ),
+        ChangeNotifierProvider(create: (_) => SettingsViewModel()),
+        ChangeNotifierProvider(create: (_) => GamesViewModel()),
+        ChangeNotifierProvider(create: (_) => CalendarViewModel()),
+        ChangeNotifierProvider(create: (_) => StandingsViewModel()),
       ],
       child: Consumer<SettingsViewModel>(
         builder: (context, manager, child) {

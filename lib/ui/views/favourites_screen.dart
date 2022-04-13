@@ -1,13 +1,9 @@
-import 'dart:convert';
-
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:football_news/business_logic/models/favourite.dart';
-import 'package:football_news/business_logic/view_models/games_view_model.dart';
+import 'package:football_news/business_logic/utils/utils.dart';
+import 'package:football_news/business_logic/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 
-import '../../business_logic/routes/router.gr.dart';
-import '../../business_logic/utils/constants.dart';
 import '../widgets/widgets.dart';
 
 class FavouritesScreen extends StatefulWidget {
@@ -17,8 +13,7 @@ class FavouritesScreen extends StatefulWidget {
   State<FavouritesScreen> createState() => _FavouritesScreenState();
 }
 
-class _FavouritesScreenState extends State<FavouritesScreen> {
-
+class _FavouritesScreenState extends State<FavouritesScreen> with ToStandingsMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,11 +39,10 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         total: null,
       ),
       onTap: () {
-        context.router.push(StandingsRoute(leagueId: favourite.id));
+        goToStandingsWithId(context, favourite.id);
       },
     );
   }
-
 
   Widget _buildStandingsLoader(context) {
     final model = Provider.of<GamesViewModel>(context, listen: true);

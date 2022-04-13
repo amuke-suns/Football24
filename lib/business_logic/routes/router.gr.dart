@@ -218,7 +218,7 @@ class FixturesRouteArgs {
 /// generated route for
 /// [_i1.StandingsScreen]
 class StandingsRoute extends _i2.PageRouteInfo<StandingsRouteArgs> {
-  StandingsRoute({_i3.Key? key, required int leagueId, int year = 2021})
+  StandingsRoute({_i3.Key? key, required int leagueId, required int year})
       : super(StandingsRoute.name,
             path: 'standings',
             args: StandingsRouteArgs(key: key, leagueId: leagueId, year: year));
@@ -228,7 +228,7 @@ class StandingsRoute extends _i2.PageRouteInfo<StandingsRouteArgs> {
 
 class StandingsRouteArgs {
   const StandingsRouteArgs(
-      {this.key, required this.leagueId, this.year = 2021});
+      {this.key, required this.leagueId, required this.year});
 
   final _i3.Key? key;
 
