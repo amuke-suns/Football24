@@ -2,10 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:football_news/business_logic/models/models.dart';
 import 'package:intl/intl.dart';
 
-class AppDateManager extends ChangeNotifier {
-
-  List<int> _years = [];
-  List<int> get years => _years;
+class CalendarViewModel extends ChangeNotifier {
 
   // supported days
   List<GamesDate> _days = [];
@@ -18,27 +15,9 @@ class AppDateManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void init() {
+  CalendarViewModel() {
     setDateList();
-    setYearList();
   }
-
-  void setYearList() {
-    _years = [];
-    int year = DateTime.now().year;
-
-    for (int i = 2010; i < year; i++) {
-      _years.add(i);
-    }
-    // _selectedYearIndex = _years.length - 1;
-  }
-
-  // int getSelectedYear() => years[_selectedYearIndex];
-
-  String getYearTimeline(int year) {
-    return '$year/${year + 1}';
-  }
-
 
   void setDateList() {
     _days = [];

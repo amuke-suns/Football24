@@ -20,32 +20,30 @@ class AllGamesScreen extends StatefulWidget {
 class _AllGamesScreenState extends State<AllGamesScreen> {
   @override
   Widget build(BuildContext context) {
-    // var dateManager = Provider.of<AppDateManager>(context, listen: true);
+    final calendarModel = Provider.of<CalendarViewModel>(context, listen: true);
 
     return Scaffold(
       appBar: AppBar(
-        title: const CustomAppBarTitle(
+        title: CustomAppBarTitle(
           title: null,
-          subtitle: 'dd.MM.YYYY', //dateManager.getAppDateDescription(),
+          subtitle: calendarModel.getAppDateDescription(),
         ),
         actions: const [SearchActionButton(), CalenderActionButton()],
         centerTitle: true,
         leading: const SettingsActionButton(),
       ),
-      body: _buildCompetitionLoader(context),
+      body: _buildCompetitionLoader(context, calendarModel),
     );
   }
 
-  Widget _buildCompetitionLoader(context) {
+  Widget _buildCompetitionLoader(context, CalendarViewModel calendarModel) {
     final model = Provider.of<GamesViewModel>(context, listen: true);
 
     return FutureBuilder<Map<String, List<FixtureDetails>>>(
-      future: model.getAllGames(),
+      future: model.getAllGames(calendarModel.getSelectedDateApiFormat()),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-            print(snapshot.error);
-
             return const Center(
               child: Text('Error occurred'),
             );
