@@ -8,6 +8,7 @@ import '../models/fixtures_query.dart';
 
 import "package:collection/collection.dart";
 
+import '../models/league_query.dart';
 import '../utils/constants.dart';
 
 class GamesViewModel extends ChangeNotifier {
@@ -22,38 +23,54 @@ class GamesViewModel extends ChangeNotifier {
 
   Set<int> get favIds => _favIds;
 
+  List<FixtureDetails> _allFixtureDetailsList = [];
+  List<LeagueDesc> _allCompetitionsList = [];
+
   GamesViewModel() {
-    loadFavourites();
+    _loadFavourites();
+    _loadCompetitionData();
+  }
+
+  List<int> getSeasonYears({required int leagueId}) {
+    return _allCompetitionsList
+        .firstWhere((element) => element.league.id == leagueId)
+        .getSeasonYears();
   }
 
   bool isFavourite(int id) => _favIds.contains(id);
 
-  void loadFavourites() async {
+  void _loadFavourites() async {
     _favourites = await _favouriteService.getAllFavouriteCompetitions();
     for (var favourite in _favourites) {
       _favIds.add(favourite.id);
     }
   }
 
-  Future<void> saveToFavourites(Favourite favourite) async {
+  void saveToFavourites(Favourite favourite) {
     _favourites.add(favourite);
     _favIds.add(favourite.id);
     notifyListeners();
     _favouriteService.saveNewFavorites(favourites);
   }
 
-  Future<void> removeFavourites(int id) async {
+  void removeFavourites(int id) {
     _favourites.removeWhere((favourite) => favourite.id == id);
     _favIds.remove(id);
     notifyListeners();
     _favouriteService.saveNewFavorites(favourites);
   }
 
-  Future<Map<String, List<FixtureDetails>>> getAllGames() async {
-    FixturesQuery decodedData = await _webService.getAllFixtures(date: '');
+  Future<void> _loadAllGames(String date) async {
+    FixturesQuery decodedData = await _webService.getAllFixtures(date: date);
+    _allFixtureDetailsList = decodedData.response;
+  }
+
+  Future<Map<String, List<FixtureDetails>>> getAllGames(String date) async {
+    await _loadAllGames(date);
+    print(date);
 
     // group by country and league name
-    var groupedMap = decodedData.response.groupListsBy(
+    var groupedMap = _allFixtureDetailsList.groupListsBy(
       (element) {
         if (_favIds.contains(element.league.id)) {
           return kFavouriteKey;
@@ -61,8 +78,25 @@ class GamesViewModel extends ChangeNotifier {
         return '${element.league.country}: ${element.league.name}';
       },
     );
+    return Future.value(groupedMap);
+  }
 
-    return groupedMap;
+  void _loadCompetitionData() async {
+    LeagueQuery decodedData = await _webService.getALlLeagues();
+    _allCompetitionsList = decodedData.response;
+  }
+
+  Future<Map<String, List<LeagueDesc>>> getCompetitionData() {
+    // group by country name
+    Map<String, List<LeagueDesc>> groupedMap =
+        _allCompetitionsList.groupListsBy((element) {
+      if (favIds.contains(element.league.id)) {
+        return kFavouriteKey;
+      }
+      return element.country.name;
+    });
+
+    return Future.value(groupedMap);
   }
 
   Map<String, List<FixtureDetails>> getFixturesSortGroup(
@@ -77,5 +111,9 @@ class GamesViewModel extends ChangeNotifier {
     );
 
     return groupedMap;
+  }
+
+  List<LeagueDesc> sortLeagueDescs(List<LeagueDesc> leagues) {
+    return leagues..sort((a, b) => a.country.name.compareTo(b.country.name));
   }
 }
