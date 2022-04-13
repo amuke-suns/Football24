@@ -13,5 +13,8 @@ const kFavouriteKey = ' FAVOURITE COMPETITIONS';
 const kOtherCompetitionsKey = 'OTHER COMPETITIONS [A-Z]';
 
 const kListTileBorder = RoundedRectangleBorder(
-  side: BorderSide(color: Colors.black, width: 0.25),
+  side: BorderSide(
+    color: Colors.black,
+    width: 0.25,
+  ),
 );

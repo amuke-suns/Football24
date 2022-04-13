@@ -1,6 +1,6 @@
 import 'package:football_news/business_logic/models/favourite.dart';
 import 'package:football_news/services/favourite/favourite_service.dart';
-import 'package:football_news/services/storage/storage_service_impl.dart';
+import 'package:football_news/services/service_locator.dart';
 
 import '../storage/storage_service.dart';
 
@@ -8,7 +8,7 @@ import '../storage/storage_service.dart';
 // wrapper around the WebApi and StorageService services. This way the view models
 // don't actually have to know anything about the web or storage details.
 class FavouriteServiceImpl implements FavouriteService {
-  final StorageService _storageService = StorageServiceImpl();
+  final StorageService _storageService = serviceLocator<StorageService>();
 
   static final defaultFavorites = [
     Favourite(

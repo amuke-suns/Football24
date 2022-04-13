@@ -48,7 +48,7 @@ class _CompetitionsScreenState extends State<CompetitionsScreen> with ToStanding
           var data = snapshot.data!;
           var keys = data.keys.toList();
           bool darkMode =
-              Provider.of<SettingsViewModel>(context, listen: false).darkMode;
+              Provider.of<SettingsViewModel>(context, listen: true).darkMode;
 
           return GroupedListView<String, String>(
             elements: keys,

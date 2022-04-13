@@ -6,22 +6,14 @@ class SettingsViewModel extends ChangeNotifier {
 
   final StorageService _storageService = serviceLocator<StorageService>();
 
-  late bool _darkMode = false;
+  bool _darkMode;
   bool get darkMode => _darkMode;
 
-  Future<SettingsViewModel> init() async {
-    isDarkMode();
-    return this;
-  }
-
-  Future<bool> isDarkMode() async {
-    _darkMode =  await _storageService.isDarkMode();
-    return Future<bool>.value(_darkMode);
-  }
+  SettingsViewModel({required bool mode}) : _darkMode = mode;
 
   Future<void> setDarkMode(bool isDarkMode) async {
-    _storageService.setDarkMode(isDarkMode);
     _darkMode = isDarkMode;
     notifyListeners();
+    _storageService.setDarkMode(isDarkMode);
   }
 }

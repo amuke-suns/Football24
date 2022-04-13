@@ -83,6 +83,13 @@ class FootballNewsTheme {
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         selectedItemColor: Colors.green,
       ),
+      snackBarTheme: const SnackBarThemeData(
+        backgroundColor: Colors.green,
+        contentTextStyle: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       textTheme: lightTextTheme,
     );
   }
@@ -103,6 +110,13 @@ class FootballNewsTheme {
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         selectedItemColor: Colors.green,
+      ),
+      snackBarTheme: const SnackBarThemeData(
+        backgroundColor: Colors.green,
+        contentTextStyle: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       textTheme: darkTextTheme,
     );

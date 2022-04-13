@@ -24,10 +24,6 @@ class CalenderActionButton extends StatelessWidget {
       listen: false,
     );
 
-    SingleChildScrollView(
-      child: Container(),
-    );
-
     showDialog(
       context: context,
       builder: (context) {
