@@ -1,14 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:football_news/business_logic/view_models/view_models.dart';
 import 'package:football_news/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../business_logic/models/standings_query.dart';
 import '../../business_logic/utils/constants.dart';
-import '../../business_logic/view_models/games_date_manager.dart';
 
 
 class StandingsScreen extends StatefulWidget {
@@ -18,7 +15,7 @@ class StandingsScreen extends StatefulWidget {
   const StandingsScreen({
     Key? key,
     required this.leagueId,
-    this.year = 2021, // required this.year,
+    required this.year,
   }) : super(key: key);
 
   @override
@@ -26,29 +23,14 @@ class StandingsScreen extends StatefulWidget {
 }
 
 class _StandingsScreenState extends State<StandingsScreen> {
-  String? appbarTitle;
-
-  Future<StandingsQuery> getStandingsData() async {
-    String jsonString = await rootBundle.loadString('assets/standings1.json');
-    /*String jsonString = await NewsService().getAllStandings(
-      leagueId: widget.leagueId,
-      year: widget.year,
-    );*/
-
-    return StandingsQuery.fromJson(jsonDecode(jsonString));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final dateManager = Provider.of<AppDateManager>(context, listen: false);
+
+    final model = Provider.of<StandingsViewModel>(context, listen: false);
 
     return FutureBuilder<StandingsQuery>(
-      future: getStandingsData(),
+      future: model.getAllStandings(id: widget.leagueId, year: widget.year),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError || snapshot.data!.response.isEmpty) {
@@ -71,7 +53,7 @@ class _StandingsScreenState extends State<StandingsScreen> {
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _buildMainBody(dateManager, league),
+              child: _buildMainBody(league),
             ),
           );
         } else {
@@ -86,7 +68,8 @@ class _StandingsScreenState extends State<StandingsScreen> {
     );
   }
 
-  Widget _buildMainBody(AppDateManager dateManager, League league) {
+  Widget _buildMainBody(League league) {
+    final model = Provider.of<StandingsViewModel>(context, listen: false);
     String leagueName = league.name;
 
     return ListView(
@@ -109,12 +92,12 @@ class _StandingsScreenState extends State<StandingsScreen> {
               width: 100,
             ),
             InkWell(
-              onTap: () => showYearDialog(dateManager, leagueName),
+              onTap: () => showYearDialog(model, leagueName),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    '$leagueName ${dateManager.getYearTimeline(widget.year)}',
+                    '$leagueName ${model.getYearTimeline(widget.year)}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -136,7 +119,7 @@ class _StandingsScreenState extends State<StandingsScreen> {
     );
   }
 
-  void showYearDialog(AppDateManager manager, String title) {
+  void showYearDialog(StandingsViewModel model, String title) {
     showDialog(
       context: context,
       builder: (context) {
@@ -165,7 +148,7 @@ class _StandingsScreenState extends State<StandingsScreen> {
           titlePadding: const EdgeInsets.all(0),
           elevation: 10,
           children: [
-            for (int year in manager.years)
+            for (int year in model.years)
               SimpleDialogOption(
                 padding: const EdgeInsets.all(0),
                 onPressed: () {
@@ -180,7 +163,7 @@ class _StandingsScreenState extends State<StandingsScreen> {
                       year == widget.year ? Colors.grey : null,
                   shape: kListTileBorder,
                   title: Text(
-                    manager.getYearTimeline(year),
+                    model.getYearTimeline(year),
                     style: TextStyle(
                       fontWeight: year == widget.year
                           ? FontWeight.bold
